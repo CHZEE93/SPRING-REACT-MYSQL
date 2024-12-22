@@ -1,6 +1,6 @@
 package com.jiraynor.board_back.provider;
 
-import java.security.KeyPair;
+import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -14,16 +14,19 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtProvider {
-    private String secretKey = "S3cr3tK3y";
 
-    public String create(String email){
-        
-        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS)));
+    private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+    public String create(String email) {
+
+        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
         String jwt = Jwts.builder()
-                .signWith(SignatureAlgorithm.ES256, secretKey)
-                .setSubject(email).setIssuedAt(new Date()).setExpiration(expireDate)
-                .compact();
+                .setSubject(email) // 토큰의 주체 (sub)
+                .setIssuedAt(new Date()) // 발행 시간
+                .setExpiration(expireDate) // 만료 시간
+                .signWith(key) // 키와 알고리즘 설정
+                .compact(); // 최종 토큰 생성
 
         return jwt;
     }
@@ -33,8 +36,11 @@ public class JwtProvider {
         Claims claims = null;
 
         try {
-            claims = Jwts.parser().setSigningKey(secretKey)
-                    .parseClaimsJws(jwt).getBody();
+            claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
