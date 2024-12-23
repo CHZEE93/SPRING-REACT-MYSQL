@@ -28,7 +28,7 @@ Http Status 401 (UnAuthorized)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 ====================================================
@@ -69,7 +69,7 @@ Http Status 400 (Bad Request)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -107,7 +107,7 @@ BoardListItem
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -144,7 +144,7 @@ BoardListItem
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -167,7 +167,7 @@ Http Status 200 (OK)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -204,7 +204,7 @@ BoardListItem
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -227,7 +227,7 @@ Http Status 200 (OK)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -265,7 +265,7 @@ Http Status 400 (Bad Request)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -295,7 +295,7 @@ FavoriteListItem
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -321,7 +321,7 @@ Http Status 200 (OK)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -352,7 +352,7 @@ commentListItem
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -401,7 +401,7 @@ Http Status 403 (Forbidden)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -446,7 +446,7 @@ Http Status 403 (Forbidden)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -497,7 +497,7 @@ Http Status 403 (Forbidden)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -534,7 +534,7 @@ Http Status 400 (Bad Request)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -571,7 +571,7 @@ BoardListItem
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -607,7 +607,7 @@ Http Status 400 (Bad Request)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
@@ -643,7 +643,7 @@ Http Status 400 (Bad Request)
 - 데이터베이스 에러
 Http Status 501 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message: "DB Error"
 }
 
