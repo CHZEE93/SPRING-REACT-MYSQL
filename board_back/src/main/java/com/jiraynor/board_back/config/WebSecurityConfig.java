@@ -29,53 +29,56 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Bean
-    protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .cors(cors -> cors
-                        .configurationSource(corsConfigurationSoruce()))
-                .csrf(CsrfConfigurer::disable)
-                .httpBasic(HttpBasicConfigurer::disable)
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/api/v1/auth/**", "/api/v1/search/**", "/file/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/**", "/api/v1/user/*").permitAll()
-                        .anyRequest().authenticated())
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        @Bean
+        protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+                httpSecurity
+                                .cors(cors -> cors
+                                                .configurationSource(corsConfigurationSoruce()))
+                                .csrf(CsrfConfigurer::disable)
+                                .httpBasic(HttpBasicConfigurer::disable)
+                                .sessionManagement(sessionManagement -> sessionManagement
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers("/", "/api/v1/auth/**", "/api/v1/search/**",
+                                                                "/file/**")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/**", "/api/v1/user/*")
+                                                .permitAll()
+                                                .anyRequest().authenticated())
+                                .exceptionHandling(exceptionHandling -> exceptionHandling
+                                                .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return httpSecurity.build();
-    }
+                return httpSecurity.build();
+        }
 
-    @Bean
-    protected CorsConfigurationSource corsConfigurationSoruce() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
+        @Bean
+        protected CorsConfigurationSource corsConfigurationSoruce() {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.addAllowedOrigin("*");
+                configuration.addAllowedMethod("*");
+                configuration.addAllowedHeader("*");
 
-        UrlBasedCorsConfigurationSource soruce = new UrlBasedCorsConfigurationSource();
-        soruce.registerCorsConfiguration("/**", configuration);
+                UrlBasedCorsConfigurationSource soruce = new UrlBasedCorsConfigurationSource();
+                soruce.registerCorsConfiguration("/**", configuration);
 
-        return soruce;
+                return soruce;
 
-    }
+        }
 }
 
 class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException authException) throws IOException, ServletException {
+        @Override
+        public void commence(HttpServletRequest request, HttpServletResponse response,
+                        AuthenticationException authException) throws IOException, ServletException {
 
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"code\": \"NP\", \"message\" : \" Do not have Permission.\"}");
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"code\": \"AF\", \"message\" : \" Authorized Failed.\"}");
 
-    }
+        }
 
 }
