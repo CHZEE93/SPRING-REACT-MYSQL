@@ -1,4 +1,4 @@
-export default interface FavoriteListItem{
+export default interface FavoriteItem{
     email: string;
     nickname: string;
     profileImage: string | null;
