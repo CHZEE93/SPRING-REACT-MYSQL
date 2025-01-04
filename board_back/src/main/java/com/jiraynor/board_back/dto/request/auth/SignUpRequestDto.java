@@ -26,7 +26,7 @@ public class SignUpRequestDto {
     private String nickname;
 
     @NotBlank
-    @Pattern(regexp = "^[0,9]{11,13}$")
+    @Pattern(regexp = "^[0-9]{10,12}$")
     private String telNumber;
 
     @NotBlank
@@ -35,6 +35,6 @@ public class SignUpRequestDto {
     private String addressDetail;
 
     @NotNull
-    private Boolean agreePersonal;
+    private Boolean agreedPersonal;
 
 }

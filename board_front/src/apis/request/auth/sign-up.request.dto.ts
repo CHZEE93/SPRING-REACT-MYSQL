@@ -5,5 +5,5 @@ export default interface SignUpRequestDTO {
     telNumber: string;
     address: string;
     addressDetail: string | null;
-    agreePersonal: boolean;
+    agreedPersonal: boolean;
 }
