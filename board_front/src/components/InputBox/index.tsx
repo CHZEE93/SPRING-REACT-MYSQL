@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, forwardRef, SetStateAction, KeyboardEvent } from 'react';
+import { ChangeEvent, forwardRef, KeyboardEvent } from 'react';
 import './style.css';
 
 interface Props{
@@ -6,9 +6,9 @@ interface Props{
     type : 'text' | 'password';
     placeholder : string;
     value: string;
-    setValue: Dispatch<SetStateAction<string>>;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     error : boolean;
-    icon?: string;
+    icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon';
     onButtonClick?: () => void;
     message?: string;
     onKeyDown?: (event : KeyboardEvent<HTMLInputElement>) => void;
@@ -17,12 +17,7 @@ interface Props{
 const InputBox = forwardRef<HTMLInputElement, Props>((props:Props, ref) =>{
     
     const {label, type, placeholder, value, error, icon, message} = props;
-    const {setValue, onButtonClick, onKeyDown} = props;
-
-    const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
-        setValue(value);
-    }
+    const {onChange, onButtonClick, onKeyDown} = props;
 
     const onKeyDownHandler = (event : KeyboardEvent<HTMLInputElement>) => {
         if (!onKeyDown) return;
@@ -33,7 +28,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props:Props, ref) =>{
         <div className='inputbox'>
             <div className='inputbox-label'>{label}</div>
             <div className={error ? 'inputbox-container-error' : 'inputbox-container'}>
-                <input ref = {ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>
+                <input ref = {ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDownHandler}/>
                 {onButtonClick !== undefined && (
                     <div className='icon-button'>
                         {icon !== undefined && <div className={`icon ${icon}`}></div>}
