@@ -1,9 +1,9 @@
-import React, { ChangeEvent, KeyboardEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
 import InputBox from 'components/InputBox';
-import { SignInRequestDto } from 'apis/request/auth';
-import { siginInRequest } from 'apis';
-import { SignInResponseDTO } from 'apis/response/auth';
+import { SignInRequestDto, SignUpRequestDto } from 'apis/request/auth';
+import { signInRequest, signUpRequest } from 'apis';
+import { SignInResponseDTO, SignUpResponseDTO } from 'apis/response/auth';
 import ResponseDto from 'apis/response/response.dto';
 import { useCookies } from 'react-cookie';
 import { MAIN_PATH } from 'constant';
@@ -107,7 +107,7 @@ export default function Authentication() {
       // 로그인 버튼 이벤트 핸들러
       const onSignInButtonClickHandler = () =>{
         const requestBody: SignInRequestDto = {email, password};
-        siginInRequest(requestBody).then(signInResponse);
+        signInRequest(requestBody).then(signInResponse);
       }
 
       // 회원가입 링크 클릭 이벤트 핸들러
@@ -174,7 +174,7 @@ export default function Authentication() {
       const addressDetailRef = useRef<HTMLInputElement | null>(null)
 
       //페이지 상태
-      const [page, setPage] = useState<1 | 2>(2);
+      const [page, setPage] = useState<1 | 2>(1);
 
       //이메일 상태
       const [email, setEmail] = useState<string>('');
@@ -249,10 +249,41 @@ export default function Authentication() {
       const [passwordButtonIcon, setPasswordButtonIcen] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
 
       //패스워드 확인 버튼 아이콘 상태
-      const [passwordCheckButtonIcon, setPasswordCheckButtonIcen] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
+      const [passwordCheckButtonIcon, setPasswordCheckButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
 
       //다음 주소 검색 팝업 오픈 함수
       const open = useDaumPostcodePopup();
+
+      // signUpResponse 처리 함수
+      const signUpResponse = (responseBody: SignUpResponseDTO | ResponseDto | null) =>{
+        if(!responseBody) {
+          alert('네트워크 이상입니다.');
+          return;
+        }
+
+        const {code} = responseBody;
+        if(code === "DE"){
+          setEmailError(true);
+          setEmailErrorMessage('중복되는 이메일 주소입니다.');
+        }
+
+        if(code === "DN"){
+          setNicknameError(true);
+          setNicknameErrorMessage('중복되는 닉네임입니다.');
+        }
+
+        if(code === "DT"){
+          setTelNumberError(true);
+          setTelNumberErrorMessage('중복되는 핸드폰 번호입니다.');
+        }
+
+        if(code === "VF") alert('모든 값을 입력하세요.');
+        if(code === "DE") alert('데이터베이스 오류입니다.');
+
+        if(code !== "SU") return;
+        
+        setView('sign-in');
+      }
       
       //이메일 변경 이벤트 핸들러
       const onEmailChangeHandler = (event : ChangeEvent<HTMLInputElement>) => {
@@ -325,6 +356,18 @@ export default function Authentication() {
         }
       };
 
+      
+      //패스워드 확인 버튼 클릭 이벤트
+      const onPasswordCheckButtonClickHandler = () =>{
+        if (passwordCheckType == 'text'){
+          setPasswordCheckType('password');
+          setPasswordCheckButtonIcon('eye-light-off-icon');
+        }else{
+          setPasswordCheckType('text');
+          setPasswordCheckButtonIcon('eye-light-on-icon');
+        }
+      };
+
       //이메일 키다운 이벤트 
       const onEmailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) =>{
         if(event.key != 'Enter') return;
@@ -378,20 +421,19 @@ export default function Authentication() {
       const onComplete = (data: Address) =>{
         const {address} = data;
         setAddress(address);
+        setAddressError(false);
+        setAddressErrorMessage('');
         if (!addressDetailRef.current) return;
         addressDetailRef.current.focus();
       }
 
-      //패스워드 확인 버튼 클릭 이벤트
-      const onPasswordCheckButtonClickHandler = () =>{
-        if (passwordType == 'text'){
-          setPasswordCheckType('password');
-          setPasswordCheckButtonIcen('eye-light-off-icon');
-        }else{
-          setPasswordCheckType('text');
-          setPasswordCheckButtonIcen('eye-light-on-icon');
+      //페이지가 변경될때마다 실행
+      useEffect(()=>{
+        if(page === 2){
+          if(!nicknameRef.current) return;
+          nicknameRef.current.focus();
         }
-      };
+      }, [page])
 
       //주소 버튼 클릭 이벤트
       const onAddressButtonClickHandler = () =>{
@@ -433,7 +475,62 @@ export default function Authentication() {
 
       //회원가입 버튼 클릭 이벤트 처리리
       const onSignUpButtonClickHandler = () =>{
-          alert('회원가입 버튼 클릭!');
+        const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*.[a-zA-Z]{2,5}$/;
+        const isEmailPattern = emailPattern.test(email);
+        if(!isEmailPattern){
+          setEmailError(true);
+          setEmailErrorMessage('이메일 주소 포맷이 맞지 않습니다.');
+        }
+
+        const isCheckedPassword = password.trim().length > 8;
+        if(!isCheckedPassword){
+          setPasswordError(true);
+          setPasswordErrorMessage('비밀번호 8자리 이상 입력해주세요.');
+        }
+
+        const isEqualPassword = password.trim() === passwordCheck.trim();
+        if(!isEqualPassword){
+          setPasswordCheckError(true);
+          setPasswordCheckErrorMessage('비밀번호가 일치하지 않습니다.');
+        }
+
+        if(!isEmailPattern || !isCheckedPassword || !isEqualPassword){
+          setPage(1)
+          return;
+        }
+
+        const hasNickname = nickname.trim().length !== 0;
+        if(!hasNickname){
+          setNicknameError(true);
+          setNicknameErrorMessage('닉네임을 입력해주세요');
+        }
+
+        const isTelNumberPatter = /^[0-9]{11,13}$/;
+        if(!isTelNumberPatter){
+          setTelNumberError(true);
+          setTelNumberErrorMessage('숫자만 입력해주세요');
+        }
+
+        const hasAddress = address.trim().length !== 0;
+        if(!hasAddress){
+          setAddressError(true);
+          setAddressErrorMessage('주소를를 입력해주세요');
+        }
+
+        if(!agreedPersonal){
+          setAgreedPersonalError(true);
+        }
+
+        if(!hasNickname || !isTelNumberPatter || !hasAddress){
+          return;
+        }
+
+        const requestBody: SignUpRequestDto = {
+          email, password, nickname, telNumber, address, addressDetail, agreedPersonal
+        };
+
+        signUpRequest(requestBody).then(signUpResponse);
+
       }
 
       return(
