@@ -1,6 +1,9 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
-import { useBoardStore } from 'stores';
+import { useBoardStore, useLoginUserStore } from 'stores';
+import { useNavigate } from 'react-router-dom';
+import { MAIN_PATH } from 'constant';
+import { useCookies } from 'react-cookie';
 
 export default function BoardWrite() {
 
@@ -18,6 +21,12 @@ export default function BoardWrite() {
   const {content, setContent} = useBoardStore();
   const {boardImageFileList, setBoardImageFileList} = useBoardStore();
   const {resetBoard} = useBoardStore();
+
+  //쿠키 상태
+  const [cookies, setCookies] = useCookies();
+
+  // 네비게이트 함수
+  const navigate = useNavigate();
 
   // 게시물 이미지 미리보기 url 상태
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -77,6 +86,11 @@ export default function BoardWrite() {
 
   // effect : 마운트시 실행할 함수
   useEffect(() => {
+    const accessToken = cookies.accessToken;
+    if(!accessToken){
+      navigate(MAIN_PATH());
+      return;
+    }
     resetBoard();
   },[]);
 

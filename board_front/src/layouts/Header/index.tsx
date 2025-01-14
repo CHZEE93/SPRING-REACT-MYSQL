@@ -2,8 +2,12 @@ import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from '
 import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
-import { useCookies } from 'react-cookie';
+import { Cookies, useCookies } from 'react-cookie';
 import { useBoardStore, useLoginUserStore } from 'stores';
+import { fileUploadRequest, PostBoardRequest } from 'apis';
+import { PostBoardRequestDto } from 'apis/request/board';
+import { PostBoardResponseDto } from 'apis/response/board';
+import ResponseDto from 'apis/response/response.dto';
 
 export default function Header() {
 
@@ -14,7 +18,7 @@ export default function Header() {
   const {pathname} = useLocation(); 
 
   // state : 쿠키 상태
-  const [cookie, setCookie] = useCookies();
+  const [cookies, setCookie] = useCookies();
 
   // state : 로그인 상태
   const [isLogin, setLogin] = useState<boolean>(false);
@@ -140,9 +144,51 @@ export default function Header() {
     //state 게시물 상태
     const {title, content, boardImageFileList, resetBoard} = useBoardStore();
 
-    // 업로드 버튼 이벤트 핸들러
-    const onUploadButtonClickHandler = () => {
+    //post board response 처리 함수
+    const postBoardResponse = (responseBody: PostBoardResponseDto | ResponseDto | null ) => {
+      if(!responseBody) return;
+      const {code} = responseBody;
+      if(code == 'DBE'){
+        alert('데이터 베이스 오류입니다.');
+      }
+      if(code == 'AF' || code == 'NU'){
+        navigate(AUTH_PATH());
+        return;
+      }
+      if(code == 'VF'){
+        alert('제목과 내용은 필수입니다.');
+      }
+      if(code !== 'SU'){
+        return;
+      }
 
+      resetBoard();
+      if(!loginUser) return;
+      const {email} = loginUser;
+      navigate(USER_PATH(email));
+
+    }
+
+    // 업로드 버튼 이벤트 핸들러
+    const onUploadButtonClickHandler = async () => {
+      const accessToken = cookies.accessToken;
+      if(!accessToken) return;
+
+      const boardImageList: string[] = [];
+
+      for(const file of boardImageFileList){
+        const data = new FormData();
+        data.append('file', file);
+
+        const url = await fileUploadRequest(data);
+        if(url) boardImageList.push(url);
+      }
+
+      const requestBody: PostBoardRequestDto = {
+        title, content, boardImageList
+      }
+      PostBoardRequest(requestBody, accessToken).then(postBoardResponse);
+      
     }
 
     if(title && content)
