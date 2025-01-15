@@ -48,4 +48,8 @@ public class BoardEntity {
         this.writerEmail = email;
     }
 
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
 }
