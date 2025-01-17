@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jiraynor.board_back.dto.request.board.PostBoardRequestDto;
 import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.jiraynor.board_back.service.BoardService;
@@ -30,6 +31,13 @@ public class BoardController {
     public ResponseEntity<? super GetBoardResponseDto> getBoard(
             @PathVariable("boardNumber") Integer boardNumber) {
         ResponseEntity<? super GetBoardResponseDto> response = boardService.getBoard(boardNumber);
+        return response;
+    }
+
+    @GetMapping("/{boardNumber}/favorite-list")
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
+            @PathVariable("boardNumber") Integer boardNumber) {
+        ResponseEntity<? super GetFavoriteListResponseDto> response = boardService.getFavoriteList(boardNumber);
         return response;
     }
 
