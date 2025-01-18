@@ -7,15 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.jiraynor.board_back.dto.request.board.PostBoardRequestDto;
+import com.jiraynor.board_back.dto.request.board.PostCommentRequestDto;
 import com.jiraynor.board_back.dto.response.ResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
+import com.jiraynor.board_back.dto.response.board.PostCommentResponseDto;
 import com.jiraynor.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.jiraynor.board_back.entity.BoardEntity;
+import com.jiraynor.board_back.entity.CommentEntity;
 import com.jiraynor.board_back.entity.FavoriteEntity;
 import com.jiraynor.board_back.entity.ImageEntity;
 import com.jiraynor.board_back.repository.BoardRepository;
+import com.jiraynor.board_back.repository.CommentRepository;
 import com.jiraynor.board_back.repository.FavoriteRepository;
 import com.jiraynor.board_back.repository.ImageRepository;
 import com.jiraynor.board_back.repository.UserRepository;
@@ -33,6 +37,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
@@ -110,6 +115,35 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PostBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber,
+            String email) {
+
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null) {
+                return PostCommentResponseDto.noExistBoard();
+            }
+
+            boolean existedEmail = userRepository.existsByEmail(email);
+            if (!existedEmail) {
+                return PostCommentResponseDto.noExistUser();
+            }
+
+            CommentEntity commentEntity = new CommentEntity(dto, boardNumber, email);
+            commentRepository.save(commentEntity);
+
+            boardEntity.increaseCommentCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PostCommentResponseDto.success();
     }
 
     @Override
