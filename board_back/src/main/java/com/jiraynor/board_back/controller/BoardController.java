@@ -7,6 +7,7 @@ import com.jiraynor.board_back.dto.request.board.PostBoardRequestDto;
 import com.jiraynor.board_back.dto.request.board.PostCommentRequestDto;
 import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetCommentListResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostCommentResponseDto;
 import com.jiraynor.board_back.dto.response.board.PutFavoriteResponseDto;
@@ -40,6 +41,13 @@ public class BoardController {
     public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
             @PathVariable("boardNumber") Integer boardNumber) {
         ResponseEntity<? super GetFavoriteListResponseDto> response = boardService.getFavoriteList(boardNumber);
+        return response;
+    }
+
+    @GetMapping("/{boardNumber}/comment-list")
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(
+            @PathVariable("boardNumber") Integer boardNumber) {
+        ResponseEntity<? super GetCommentListResponseDto> response = boardService.getCommentList(boardNumber);
         return response;
     }
 

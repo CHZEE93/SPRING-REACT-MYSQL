@@ -10,6 +10,7 @@ import com.jiraynor.board_back.dto.request.board.PostBoardRequestDto;
 import com.jiraynor.board_back.dto.request.board.PostCommentRequestDto;
 import com.jiraynor.board_back.dto.response.ResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetCommentListResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostCommentResponseDto;
@@ -24,6 +25,7 @@ import com.jiraynor.board_back.repository.FavoriteRepository;
 import com.jiraynor.board_back.repository.ImageRepository;
 import com.jiraynor.board_back.repository.UserRepository;
 import com.jiraynor.board_back.repository.resultSet.GetBoardResultSet;
+import com.jiraynor.board_back.repository.resultSet.GetCommentListResultSet;
 import com.jiraynor.board_back.repository.resultSet.GetFavoriteListResultSet;
 import com.jiraynor.board_back.service.BoardService;
 
@@ -82,6 +84,26 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetFavoriteListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber) {
+
+        List<GetCommentListResultSet> resultSets = new ArrayList<>();
+
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return GetCommentListResponseDto.noExistBoard();
+
+            resultSets = commentRepository.getCommentList(boardNumber);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetCommentListResponseDto.success(resultSets);
     }
 
     @Override
