@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 import { Cookies, useCookies } from 'react-cookie';
 import { useBoardStore, useLoginUserStore } from 'stores';
-import { fileUploadRequest, PostBoardRequest } from 'apis';
+import { fileUploadRequest, postBoardRequest } from 'apis';
 import { PostBoardRequestDto } from 'apis/request/board';
 import { PostBoardResponseDto } from 'apis/response/board';
 import ResponseDto from 'apis/response/response.dto';
@@ -187,7 +187,7 @@ export default function Header() {
       const requestBody: PostBoardRequestDto = {
         title, content, boardImageList
       }
-      PostBoardRequest(requestBody, accessToken).then(postBoardResponse);
+      postBoardRequest(requestBody, accessToken).then(postBoardResponse);
       
     }
 
