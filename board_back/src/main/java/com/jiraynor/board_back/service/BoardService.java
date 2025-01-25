@@ -11,6 +11,7 @@ import com.jiraynor.board_back.dto.response.board.GetCommentListResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostCommentResponseDto;
 import com.jiraynor.board_back.dto.response.board.PutFavoriteResponseDto;
+import com.jiraynor.board_back.dto.response.board.DeleteBoardResponseDto;
 
 public interface BoardService {
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber);
@@ -27,4 +28,6 @@ public interface BoardService {
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email);
 
     ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardNumber);
+
+    ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardNumber, String email);
 }

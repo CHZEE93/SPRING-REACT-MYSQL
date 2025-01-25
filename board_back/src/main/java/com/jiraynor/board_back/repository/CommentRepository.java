@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.jiraynor.board_back.entity.CommentEntity;
 import com.jiraynor.board_back.repository.resultSet.GetCommentListResultSet;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 
@@ -24,4 +26,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             "ORDER BY write_datetime DESC ", nativeQuery = true)
     List<GetCommentListResultSet> getCommentList(Integer boardNumber);
 
+    @Transactional
+    void deleteByBoardNumber(Integer boardNumber);
 }
