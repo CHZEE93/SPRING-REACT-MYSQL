@@ -3,7 +3,7 @@ import './style.css'
 import { Board, CommentItem, FavoriteItem } from 'types/interface'
 import FavoriteListItem from 'components/FavoriteListItem'
 import CommentListItem from 'components/CommentListItem'
-import Pagenation from 'components/Pagination'
+import Pagination from 'components/Pagination'
 import defaultProfileImage from 'assets/image/default-profile-image.png'
 import { useLoginUserStore } from 'stores'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -15,6 +15,7 @@ import { DeleteBoardResponseDto, GetCommentListResponseDto, GetFavoriteListRespo
 import dayjs from 'dayjs'
 import { useCookies } from 'react-cookie'
 import { PostCommentRequestDto } from 'apis/request/board'
+import { usePagination } from 'hooks'
 
 export default function BoardDetail() {
 
@@ -175,20 +176,24 @@ export default function BoardDetail() {
     //좋아요 리스트 상태
     const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
-    //댓글 리스트 상태
-    const [commentList, setCommentList] = useState<CommentItem[]>([]);
+    //페이지네이션 관련 상태
+    const {currentPage,currentSection,viewList,viewPageList,totalSection,
+      setCurrentPage, setCurrentSection, setTotalList} = usePagination<CommentItem>(3);
 
     //좋아요 상태
     const [isFavorite, setFavorite] = useState<boolean>(false);
 
     //좋아요 상자 보기 상태
     const [showFavorite, setShowFavorite] = useState<boolean>(false);
-
-    //댓글 상자 보기 상태
-    const [showComment, setShowComment] = useState<boolean>(false);
+    
+    //전체 댓글 갯수 상태
+    const [totalCommentCount, setTotalCommentCount]=useState<number>(0);
 
     //댓글 상태
     const [comment, setComment] = useState<string>('');
+
+    //댓글 상자 보기 상태
+    const [showComment, setShowComment] = useState<boolean>(false);
 
     //get Favorite List Response 처리함수
     const getFavoriteListResponse = (responseBody:GetFavoriteListResponseDto | ResponseDto | null) => {
@@ -219,7 +224,8 @@ export default function BoardDetail() {
       if(code !== 'SU') return;
 
       const {commentList} = responseBody as GetCommentListResponseDto;
-      setCommentList(commentList);
+      setTotalList(commentList);
+      setTotalCommentCount(commentList.length);
     }
 
     //put Favorite Response 처리함수
@@ -314,7 +320,7 @@ export default function BoardDetail() {
             <div className='icon-button'>
               <div className='icon comment-icon'></div>
             </div>
-            <div className='board-detail-bottom-button-text'>{`댓글 ${commentList.length}`}</div>
+            <div className='board-detail-bottom-button-text'>{`댓글 ${totalCommentCount}`}</div>
             <div className='icon-button' onClick={onShowCommentClickHandler}>
               {showComment ?
               <div className='icon up-light-icon'></div> :
@@ -336,14 +342,21 @@ export default function BoardDetail() {
         {showComment &&
         <div className='board-detail-bottom-comment-box'>
           <div className='board-detail-bottom-comment-container'>
-            <div className='board-detail-bottom-comment-title'>{' 댓글 '}<span className='emphasis'>{commentList.length}</span></div>
+            <div className='board-detail-bottom-comment-title'>{' 댓글 '}<span className='emphasis'>{totalCommentCount}</span></div>
             <div className='board-detail-bottom-comment-list-container'>
-              {commentList.map(item => <CommentListItem commentListItem={item} />)}
+              {viewList.map(item => <CommentListItem commentListItem={item} />)}
             </div>
           </div>
           <div className='divider'></div>
           <div className='board-detail-bottom-comment-pagination-box'>
-            <Pagenation />
+            <Pagination 
+            currentPage={currentPage}
+            currentSection={currentSection}
+            setCurrentPage={setCurrentPage}
+            setCurrentSection={setCurrentSection}
+            viewPageList={viewPageList}
+            totalSection={totalSection}
+            />
           </div>
           {loginUser !== null &&
           <div className='board-detail-bottom-comment-input-box'>
