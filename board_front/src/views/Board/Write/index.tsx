@@ -31,7 +31,7 @@ export default function BoardWrite() {
   // 게시물 이미지 미리보기 url 상태
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-  // 제목 변경 이벤트 해들러러
+  // 제목 변경 이벤트 핸들러
   const onTitleChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) =>{
     const {value} = event.target;
     setTitle(value); 
@@ -103,7 +103,7 @@ export default function BoardWrite() {
           </div>
           <div className='divider'></div>
           <div className='board-write-content-box'>
-            <textarea ref={contentRef} className='board-write-content-textarea' placeholder='본문을 작성해 주세요' onChange={onContentChangeHandler} />
+            <textarea ref={contentRef} className='board-write-content-textarea' placeholder='본문을 작성해 주세요' value={content} onChange={onContentChangeHandler} />
             <div className='icon-button' onClick = {onImageUploadButtonClickHandler}>
               <div className='icon image-box-light-icon'></div>
             </div>
