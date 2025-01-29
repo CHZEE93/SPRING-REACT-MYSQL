@@ -13,6 +13,7 @@ import com.jiraynor.board_back.dto.response.ResponseDto;
 import com.jiraynor.board_back.dto.response.board.DeleteBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetCommentListResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetLatestsBoardListResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.jiraynor.board_back.dto.response.board.PatchBoardResponseDto;
@@ -20,9 +21,11 @@ import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostCommentResponseDto;
 import com.jiraynor.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.jiraynor.board_back.entity.BoardEntity;
+import com.jiraynor.board_back.entity.BoardListViewEntity;
 import com.jiraynor.board_back.entity.CommentEntity;
 import com.jiraynor.board_back.entity.FavoriteEntity;
 import com.jiraynor.board_back.entity.ImageEntity;
+import com.jiraynor.board_back.repository.BoardListViewRepository;
 import com.jiraynor.board_back.repository.BoardRepository;
 import com.jiraynor.board_back.repository.CommentRepository;
 import com.jiraynor.board_back.repository.FavoriteRepository;
@@ -44,6 +47,7 @@ public class BoardServiceImplement implements BoardService {
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
     private final CommentRepository commentRepository;
+    private final BoardListViewRepository boardListViewRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
@@ -103,6 +107,22 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetCommentListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super GetLatestsBoardListResponseDto> getLatestsBoardList() {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            boardListViewEntities = boardListViewRepository.findByOrderByWriteDatetimeDesc();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetLatestsBoardListResponseDto.success(boardListViewEntities);
     }
 
     @Override

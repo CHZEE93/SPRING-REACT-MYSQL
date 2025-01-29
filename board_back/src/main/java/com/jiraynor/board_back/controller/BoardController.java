@@ -11,6 +11,7 @@ import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.jiraynor.board_back.dto.response.board.PatchBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetCommentListResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetLatestsBoardListResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.PostCommentResponseDto;
 import com.jiraynor.board_back.dto.response.board.PutFavoriteResponseDto;
@@ -61,6 +62,12 @@ public class BoardController {
     public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(
             @PathVariable("boardNumber") Integer boardNumber) {
         ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
+        return response;
+    }
+
+    @GetMapping("/latest-list")
+    public ResponseEntity<? super GetLatestsBoardListResponseDto> getLatestsBoardList() {
+        ResponseEntity<? super GetLatestsBoardListResponseDto> response = boardService.getLatestsBoardList();
         return response;
     }
 
