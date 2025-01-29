@@ -8,6 +8,7 @@ import com.jiraynor.board_back.dto.request.board.PostCommentRequestDto;
 import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetLatestsBoardListResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetTop3BoardListResponseDto;
 import com.jiraynor.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.jiraynor.board_back.dto.response.board.PatchBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetCommentListResponseDto;
@@ -24,6 +25,8 @@ public interface BoardService {
         ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber);
 
         ResponseEntity<? super GetLatestsBoardListResponseDto> getLatestsBoardList();
+
+        ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
 
         ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
 
