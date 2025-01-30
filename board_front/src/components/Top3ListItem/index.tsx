@@ -3,6 +3,7 @@ import './style.css';
 import defaultProfileImage from 'assets/image/default-profile-image.png'
 import { BoardItem } from 'types/interface';
 import { useNavigate } from 'react-router-dom';
+import { BOARD_DETAIL_PATH, BOARD_PATH } from 'constant';
 
 interface Props{
      top3ListItem : BoardItem;
@@ -17,11 +18,11 @@ export default function Top3ListItem({top3ListItem} : Props) {
     const {writeDatetime, writeNickname, writeProfileImage } = top3ListItem;
 
     //function - navigate
-    //const navigator = useNavigate();
+    const navigate = useNavigate();
 
     //event handler
     const onClick = () => {
-        //navigator(boardNumber)
+        navigate(BOARD_DETAIL_PATH(boardNumber));
     };
 
     // render
