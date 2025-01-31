@@ -9,6 +9,7 @@ import com.jiraynor.board_back.dto.response.board.GetBoardResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetLatestsBoardListResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetTop3BoardListResponseDto;
+import com.jiraynor.board_back.dto.response.board.GetUserBoardListResponseDto;
 import com.jiraynor.board_back.dto.response.board.GetSearchBoardListResponseDto;
 import com.jiraynor.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.jiraynor.board_back.dto.response.board.PatchBoardResponseDto;
@@ -31,6 +32,8 @@ public interface BoardService {
 
         ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord,
                         String preSearchWord);
+
+        ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email);
 
         ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
 
